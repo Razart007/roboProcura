@@ -161,11 +161,6 @@ public class FramePrincipal extends JFrame{
 						Celula celula = new Celula(l, c, false);
 						celula.getBotao().setContentAreaFilled(false);
 						boolean caminhoLivre = false;
-						
-						if ((c == 1) && (l == 3)){
-							caminhoLivre = true;
-						}
-						
 						if (c == 2){
 							caminhoLivre = true;
 						}

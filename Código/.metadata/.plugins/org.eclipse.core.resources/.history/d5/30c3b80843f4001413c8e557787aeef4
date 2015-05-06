@@ -161,11 +161,6 @@ public class FramePrincipal extends JFrame{
 						Celula celula = new Celula(l, c, false);
 						celula.getBotao().setContentAreaFilled(false);
 						boolean caminhoLivre = false;
-						
-						if ((c == 1) && (l == 3)){
-							caminhoLivre = true;
-						}
-						
 						if (c == 2){
 							caminhoLivre = true;
 						}
@@ -178,64 +173,11 @@ public class FramePrincipal extends JFrame{
 							caminhoLivre = true;
 						}
 						
-						if (c == 6){
+						if ((c == 6) && (l == 4)){
 							caminhoLivre = true;
 						}
 						
-						if ((c == 7) && (l == 4)){
-							caminhoLivre = true;
-						}
-						
-						if ((c == 8) && ((l == 4) || (l == 5) || (l == 6))){
-							caminhoLivre = true;
-						}
-						
-						if ((c == 9) && (l == 6)){
-							caminhoLivre = true;
-						}
-						
-						if (c == 10){
-							caminhoLivre = true;
-						}
-						
-						if ((c == 11) && (l == 0)){
-							caminhoLivre = true;
-						}
-						
-						if (c == 12){
-							caminhoLivre = true;
-						}
-						
-						if ((c == 13) && (l == 3)){
-							caminhoLivre = true;
-						}
-						
-						if (c == 14){
-							caminhoLivre = true;
-						}
-						
-						if ((c == 15) && (l == 0)){
-							caminhoLivre = true;
-						}
-						
-						if (c == 16){
-							caminhoLivre = true;
-						}
-						
-						if ((c == 17) && (l == 6)){
-							caminhoLivre = true;
-						}
-						
-						if ((c == 18) && ((l == 6) || (l == 5) || (l == 4))){
-							caminhoLivre = true;
-						}
-						
-						if (caminhoLivre){
-							celula.getBotao().setIcon(imLivre);
-						}
-						else {
-							celula.getBotao().setIcon(imObstaculo);
-						}
+						if ((c == 6) && (l))
 						
 						matrizAdj[l][c] = celula;
 						ambiente.add(matrizAdj[l][c].getBotao());
