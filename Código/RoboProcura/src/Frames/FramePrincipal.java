@@ -22,10 +22,12 @@ public class FramePrincipal extends JFrame{
 	JMenuItem sair, novo, abrir, salvar;
 	JButton jBuExecutar, robo, porta;
 	Celula [][] matrizAdj = new Celula [7][20];
-	int posicaoRoboX = 0, posicaoRoboY = 240, posicaoMatrizRoboX, posicaoMatrizRoboY, posicaoPortaX = 900, 
-			posicaoPortaY = 320, posicaoMatrizPortaX, posicaoMatrizPortaY;
+	int linhaRobo = -1, colunaRobo = -1, linhaObjetivo = -1, colunaObjetivo = -1;
 	ImageIcon imObstaculo = new ImageIcon("Imagens/obstaculo.png");
 	ImageIcon imLivre = new ImageIcon("Imagens/livre.png");
+    ImageIcon imRobo = new ImageIcon("Imagens/Robo.png");  
+    ImageIcon imPorta = new ImageIcon("Imagens/Porta.gif");
+
 	
 	public FramePrincipal(){
 		inicializaFrame();
@@ -123,40 +125,31 @@ public class FramePrincipal extends JFrame{
 		add(ambiente);
 		ambiente.setBounds(10, 5, 1010, 560);
 		ambiente.setLayout(null);
-				
-	    ImageIcon imRobo = new ImageIcon("Imagens/Robo.png");  
-	    														 
-		robo = new JButton(imRobo);
-		robo.setContentAreaFilled(false);
-		ambiente.add(robo);
-		robo.setBounds(0, 240, 50, 80);
+					    
+	    linhaRobo = 3;
+	    colunaRobo = 0;
+	    linhaObjetivo = 4;
+	    colunaObjetivo = 18;
 		
-		porta = new JButton(new ImageIcon("Imagens/Porta.gif"));
-		porta.setContentAreaFilled(false);
-		ambiente.add(porta);
-		porta.setBounds(posicaoPortaX, posicaoPortaY, 50, 80);
-		
-		if(posicaoRoboX != 0){
-			posicaoMatrizRoboX = posicaoRoboX / 50;
-		}
-		else {
-			posicaoMatrizRoboX = 0;
-		}
-		
-		posicaoMatrizRoboY = posicaoRoboY / 80;
-		
-		if(posicaoPortaX != 0){
-			posicaoMatrizPortaX = posicaoPortaX / 50;
-		}
-		else{
-			posicaoMatrizPortaX = 0;
-		}
-		
-		posicaoMatrizPortaY = posicaoPortaY / 80;
+	    Celula robo = new Celula(linhaRobo,colunaRobo,false);
+	    robo.setRobo(true);
+	    robo.getBotao().setIcon(imRobo);
+	    robo.getBotao().setContentAreaFilled(false);
+	    matrizAdj[robo.getLinha()][robo.getColuna()] = robo;
+	    matrizAdj[robo.getLinha()][robo.getColuna()].getBotao().setBounds(colunaRobo*50, linhaRobo*80, 50, 80);
+	    ambiente.add(matrizAdj[robo.getLinha()][robo.getColuna()].getBotao());
+	   
+	    Celula porta = new Celula(linhaObjetivo,colunaObjetivo,false);
+	    porta.setRobo(true);
+	    porta.getBotao().setIcon(imPorta);
+	    porta.getBotao().setContentAreaFilled(false);
+	    matrizAdj[porta.getLinha()][porta.getColuna()] = porta;
+	    matrizAdj[porta.getLinha()][porta.getColuna()].getBotao().setBounds(colunaObjetivo*50, linhaObjetivo*80, 50, 80);
+	    ambiente.add(matrizAdj[porta.getLinha()][porta.getColuna()].getBotao());
 		
 		for (int l = 0; l < 7;l++){
 			for (int c = 0; c < 20; c++){
-				if (!((l == posicaoMatrizRoboY && c == posicaoMatrizRoboX)||(l == posicaoMatrizPortaY && c == posicaoMatrizPortaX))){
+				if (!((l == linhaRobo && c == colunaRobo)||(l == linhaObjetivo && c == colunaObjetivo))){
 					try{
 						Celula celula = new Celula(l, c, false);
 						celula.getBotao().setContentAreaFilled(false);
@@ -232,6 +225,7 @@ public class FramePrincipal extends JFrame{
 						
 						if (caminhoLivre){
 							celula.getBotao().setIcon(imLivre);
+							celula.setObstaculo(false);
 						}
 						else {
 							celula.getBotao().setIcon(imObstaculo);

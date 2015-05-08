@@ -8,15 +8,17 @@ import javax.swing.JButton;
 public class Celula {
 	private int linha;
 	private int coluna;
-	private boolean obstaculo;
+	private boolean obstaculo, robo, objetivo;
 	private JButton botao;
-	
+		
 	
 	public Celula(int linha, int coluna, boolean obstaculo){
 		this.linha = linha;
 		this.coluna = coluna;
 		this.obstaculo = obstaculo;
 		botao = new JButton();		
+		robo = false;
+		objetivo = false;
 	}
 
 	public int getLinha() {
@@ -49,5 +51,21 @@ public class Celula {
 
 	public void setBotao(JButton botao) {
 		this.botao = botao;
+	}
+	
+	public void setRobo(boolean robo){
+		this.robo = robo;
+	}
+	
+	public void setObjetivo(boolean objetivo){
+		this.objetivo = objetivo;
+	}
+	
+	public boolean isRobo(){
+		return robo;
+	}
+	
+	public boolean isObjetivo(){
+		return objetivo;
 	}
 }
