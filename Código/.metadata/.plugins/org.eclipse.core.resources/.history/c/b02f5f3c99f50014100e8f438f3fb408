@@ -1,0 +1,13 @@
+package Arquivos;
+
+public class ManipulaArquivoAmbiente {
+	
+	
+	public void abrirAmbiente(){
+		
+	}
+	
+	public void salvarAmbiente(){
+		
+	}
+}

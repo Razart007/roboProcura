@@ -17,4 +17,15 @@
 <fullyQualifiedTypeName name="Buscas.Celula"/>
 <fullyQualifiedTypeName name="Frames.FramePrincipal.eventosB"/>
 <fullyQualifiedTypeName name="java.awt.event.ActionListener"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="javax.swing.JFileChooser"/>
+<fullyQualifiedTypeName name="javax.swing.filechooser.FileNameExtensionFilter"/>
+<fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+<fullyQualifiedTypeName name="java.io.FileInputStream"/>
+<fullyQualifiedTypeName name="java.io.ObjectInputStream"/>
+<fullyQualifiedTypeName name="Buscas.MatrizAdj"/>
+<fullyQualifiedTypeName name="Buscas.Pilha"/>
+<fullyQualifiedTypeName name="Buscas.CelulaMatrizAdj"/>
+<fullyQualifiedTypeName name="Buscas.Graph"/>
 </qualifiedTypeNameHistroy>

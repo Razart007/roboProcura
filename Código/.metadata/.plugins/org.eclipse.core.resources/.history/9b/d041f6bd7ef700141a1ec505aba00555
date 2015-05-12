@@ -1,0 +1,8 @@
+package Buscas;
+
+public class CelulaMatrizAdj {
+	int linha;
+	int coluna;
+	int ligacao;
+	
+}

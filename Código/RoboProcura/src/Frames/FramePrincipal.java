@@ -14,6 +14,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import Buscas.Celula;
+import Buscas.Graph;
+import Buscas.MatrizAdj;
+import Buscas.Pilha;
 
 public class FramePrincipal extends JFrame{
 	JPanel ambiente;
@@ -27,6 +30,8 @@ public class FramePrincipal extends JFrame{
 	ImageIcon imLivre = new ImageIcon("Imagens/livre.png");
     ImageIcon imRobo = new ImageIcon("Imagens/Robo.png");  
     ImageIcon imPorta = new ImageIcon("Imagens/Porta.gif");
+	private Graph graph;
+	int linhaMatrizAmbiente = 0, colunaMatrizAmbiente = 0;
 
 	
 	public FramePrincipal(){
@@ -104,17 +109,6 @@ public class FramePrincipal extends JFrame{
 		
 		barraMenus.add(executar);
 		
-		jBuExecutar = new JButton("Executar");
-		jBuExecutar.setSize(100, 30);
-		add(jBuExecutar);
-		jBuExecutar.setBounds(475, 567, 100, 30);	
-		
-		jBuExecutar.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
 	}
 	
 	
@@ -125,7 +119,7 @@ public class FramePrincipal extends JFrame{
 		add(ambiente);
 		ambiente.setBounds(10, 5, 1010, 560);
 		ambiente.setLayout(null);
-					    
+				
 	    linhaRobo = 3;
 	    colunaRobo = 0;
 	    linhaObjetivo = 4;
@@ -140,7 +134,7 @@ public class FramePrincipal extends JFrame{
 	    ambiente.add(matrizAdj[robo.getLinha()][robo.getColuna()].getBotao());
 	   
 	    Celula porta = new Celula(linhaObjetivo,colunaObjetivo,false);
-	    porta.setRobo(true);
+	    porta.setObjetivo(true);
 	    porta.getBotao().setIcon(imPorta);
 	    porta.getBotao().setContentAreaFilled(false);
 	    matrizAdj[porta.getLinha()][porta.getColuna()] = porta;
@@ -229,6 +223,7 @@ public class FramePrincipal extends JFrame{
 						}
 						else {
 							celula.getBotao().setIcon(imObstaculo);
+							celula.setObstaculo(true);
 						}
 						
 						matrizAdj[l][c] = celula;
@@ -240,6 +235,21 @@ public class FramePrincipal extends JFrame{
 				}
 			}
 		}
+		graph = new Graph(matrizAdj, linhaRobo, colunaRobo, linhaObjetivo, colunaObjetivo);
+		adcionarArestas();
+		
+		jBuExecutar = new JButton("Executar");
+		jBuExecutar.setSize(100, 30);
+		add(jBuExecutar);
+		jBuExecutar.setBounds(475, 567, 100, 30);	
+		
+		jBuExecutar.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				graph.dfs();
+				mostraProfundidade();
+			}
+		});		
 	}
 	
 	private class eventosB implements ActionListener{
@@ -260,6 +270,53 @@ public class FramePrincipal extends JFrame{
 				matrizAdj[linha][coluna].getBotao().setIcon(imLivre);
 				matrizAdj[linha][coluna].setObstaculo(true);
 			}
+		}
+	}
+	
+	public void adcionarArestas(){
+		int linha = 0;
+		int coluna = 0;
+		for (int i = 0; i < 140; i++){
+			if (linha > 0){
+				graph.addEdge(i, i-20, linha, coluna, linha - 1, coluna);
+			}
+			
+			if (coluna > 0){
+				graph.addEdge(i, i-1, linha, coluna, linha, coluna - 1);
+			}
+			
+			if (linha < 6){
+				graph.addEdge(i, i+20, linha, coluna, linha + 1, coluna);
+			}
+			
+			if (coluna < 19){
+				graph.addEdge(i, i+1, linha, coluna, linha, coluna + 1);
+			}
+			
+			if (coluna == 19){
+				linha++;
+				coluna = 0;
+			}
+			else{
+				coluna++;
+			}
+		}
+	}
+	
+	public void mostraProfundidade(){
+		Celula aux;
+		for (int i = 1; i < graph.getCaminho().size(); i++){
+			aux = graph.getCaminho().get(i);
+			matrizAdj[aux.getLinha()][aux.getColuna()].getBotao().setIcon(imRobo);
+			matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imLivre);
+			linhaRobo = aux.getLinha();
+			colunaRobo = aux.getColuna();
+			try {
+				new Thread().sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			this.validate();
 		}
 	}
 	

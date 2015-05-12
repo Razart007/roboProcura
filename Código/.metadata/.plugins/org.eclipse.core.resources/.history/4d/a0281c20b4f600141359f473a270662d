@@ -1,0 +1,10 @@
+package Buscas;
+
+public class MatrizAdj {
+	int [][] matrizAdj = new int [140][140];
+	
+	
+	public MatrizAdj(){
+		
+	}
+}

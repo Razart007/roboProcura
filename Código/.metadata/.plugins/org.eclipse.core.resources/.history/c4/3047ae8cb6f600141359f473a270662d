@@ -1,0 +1,20 @@
+package Buscas;
+
+public class MatrizAdj {
+	int [][] matrizAdj = new int [140][140];
+	
+	
+	public MatrizAdj(){
+		for (int l = 0; l < 140; l++){
+			for (int c = 0; c < 140; c++){
+				matrizAdj [l][c] = 1;
+				matrizAdj [l+1][c] = 1;
+				matrizAdj [l-1][c] = 1;
+				matrizAdj [l][c+1] = 1;
+				matrizAdj [l][c-1] = 1;
+				
+			}
+		}
+		
+	}
+}

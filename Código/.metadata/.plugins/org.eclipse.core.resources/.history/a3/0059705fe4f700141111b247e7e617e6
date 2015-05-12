@@ -1,0 +1,29 @@
+package Buscas;
+
+public class MatrizAdj {
+	CelulaMatrizAdj [][] matrizAdj = new CelulaMatrizAdj [140][140];
+	public MatrizAdj(){
+		for (int l = 0; l < 140; l++){
+			for (int c = 0; c < 140; c++){
+				matrizAdj[l][c].ligacao = 0;
+				matrizAdj[l][c].linhaStart = -1;
+				matrizAdj[l][c].colunaStart = -1;
+				matrizAdj[l][c].linhaEnd = -1;
+				matrizAdj[l][c].colunaEnd = -1;
+			}
+		}
+	}
+	
+	public void addEdge(int start, int end, int linhaStart, int colunaStart, int linhaEnd, int colunaEnd){
+		matrizAdj[start][end].ligacao = 1;
+		matrizAdj[start][end].linhaStart = linhaStart;
+		matrizAdj[start][end].colunaStart = colunaStart;
+		matrizAdj[start][end].linhaEnd= linhaEnd;
+		matrizAdj[start][end].colunaEnd = colunaEnd;
+		matrizAdj[end][start].ligacao = 1;
+		matrizAdj[end][start].linhaStart = linhaEnd;
+		matrizAdj[end][start].colunaStart = colunaEnd;
+		matrizAdj[end][start].linhaEnd = linhaStart;
+		matrizAdj[end][start].colunaEnd = colunaStart;
+	}
+}

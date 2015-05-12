@@ -1,16 +1,13 @@
 package Buscas;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 
 public class Celula {
 	private int linha;
 	private int coluna;
-	private boolean obstaculo, robo, objetivo;
+	private boolean obstaculo, robo, objetivo, wasVisited;
 	private JButton botao;
-		
+	
 	
 	public Celula(int linha, int coluna, boolean obstaculo){
 		this.linha = linha;
@@ -19,6 +16,7 @@ public class Celula {
 		botao = new JButton();		
 		robo = false;
 		objetivo = false;
+		wasVisited = false;
 	}
 
 	public int getLinha() {
@@ -67,5 +65,13 @@ public class Celula {
 	
 	public boolean isObjetivo(){
 		return objetivo;
+	}
+	
+	public boolean isWasVisited() {
+		return wasVisited;
+	}
+
+	public void setWasVisited(boolean wasVisited) {
+		this.wasVisited = wasVisited;
 	}
 }

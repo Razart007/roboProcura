@@ -1,0 +1,22 @@
+package Buscas;
+
+public class Graph {
+	private Pilha pilha;
+	private MatrizAdj adjMat = new MatrizAdj();
+	private Celula [][] matrizAmbiente = new Celula [7][20];
+	int linhaMatrizAmbiente = 0; colunaMatrizAmbiente = 0;
+	
+	public Graph(){		
+		pilha = new Pilha();
+	}
+	
+	public void addVertex(char lab){
+		
+		vertexList[nVerts++] = new Vertex(lab);
+	}
+	
+	public void addEdge(int start, int end)	{
+		adjMat[start][end] = 1;
+		adjMat[end][start] = 1;
+	}
+}

@@ -1,0 +1,29 @@
+package Buscas;
+
+public class Graph {
+	private Pilha pilha;
+	
+
+
+	public Graph(){
+		vertexList = new Vertex[MAX_VERTS];
+
+		adjMat = new int[MAX_VERTS][MAX_VERTS];
+		nVerts = 0;
+		for(int y=0; y<MAX_VERTS; y++)   
+			for(int x=0; x<MAX_VERTS; x++)  
+				adjMat[x][y] = 0;
+
+		theStack = new StackX();
+		theQueue = new Queue();
+	}
+	
+	public void addVertex(char lab){
+		vertexList[nVerts++] = new Vertex(lab);
+	}
+	
+	public void addEdge(int start, int end)	{
+		adjMat[start][end] = 1;
+		adjMat[end][start] = 1;
+	}
+}

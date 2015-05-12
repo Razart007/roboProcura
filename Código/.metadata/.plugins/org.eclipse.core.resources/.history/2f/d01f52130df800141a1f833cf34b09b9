@@ -1,0 +1,27 @@
+package Buscas;
+
+public class Pilha {
+	private final int SIZE = 140;
+	private CelulaPilha[] st;
+	private int top;
+
+	public Pilha() {
+		st = new CelulaPilha[SIZE];
+		top = -1;
+	}
+	
+	public void push(int linha, int coluna){ 
+		st[++top] = j; 
+	}
+	public int pop(){ 
+		return st[top--]; 
+	}
+
+	public int peek(){ 
+		return st[top]; 
+	}
+
+	public boolean isEmpty() { 
+		return (top == -1); 
+	}
+}
