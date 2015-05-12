@@ -58,7 +58,7 @@ public class Graph {
 					break;
 				}
 				System.out.println("Linha: "+v.linha+" Coluna: "+v.coluna);
-			}
+			}	
 			//Aqui para inserir o código para voltar as casas em backtraking
 			
 		} 

@@ -320,14 +320,14 @@ public class FramePrincipal extends JFrame{
 			
 				try 
 				{
-					new Thread();
+					
 					aux = graph.getCaminho().get(i);
 					matrizAdj[aux.getLinha()][aux.getColuna()].getBotao().setIcon(imRobo);
 					matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imPassou);
 					linhaRobo = aux.getLinha();
 					colunaRobo = aux.getColuna();
-					
-					Thread.sleep(1000);
+					new Thread();
+					Thread.sleep(500);
 				} catch (InterruptedException e) 
 				{
 					e.printStackTrace();
