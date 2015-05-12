@@ -1,6 +1,9 @@
 package Buscas;
 
+import java.awt.Frame;
 import java.util.ArrayList;
+
+import Frames.FramePrincipal;
 
 public class Graph {
 	private Pilha pilha;
@@ -8,6 +11,7 @@ public class Graph {
 	private Celula [][] matrizAmbiente;
 	int linhaMatrizAmbiente = 0, colunaMatrizAmbiente = 0, linhaEstadoInicial, colunaEstadoInicial, linhaEstadoFinal, colunaEstadoFinal;
 	private ArrayList<Celula> caminho = new ArrayList<Celula>();
+	CelulaPilha v;
 
 	public Graph(Celula [][] matrizAmbiente, int linhaEstadoInicial, int colunaEstadoInicial, int linhaEstadoFinal, int colunaEstadoFinal){		
 		pilha = new Pilha();
@@ -33,7 +37,8 @@ public class Graph {
 
 
 	public void dfs()  
-	{                               
+	{                              
+		
 		matrizAmbiente[linhaEstadoInicial][colunaEstadoInicial].setWasVisited(true); 
 		caminho.add(matrizAmbiente[linhaEstadoInicial][colunaEstadoInicial]);
 		pilha.push(linhaEstadoInicial, colunaEstadoInicial);             
@@ -53,11 +58,10 @@ public class Graph {
 					break;
 				}
 				System.out.println("Linha: "+v.linha+" Coluna: "+v.coluna);
-				
 			}
 			//Aqui para inserir o código para voltar as casas em backtraking
+			
 		} 
-
 		for(int l=0; l < 7; l++){
 			for (int c=0; c < 20; c++){
 				matrizAmbiente[l][c].setWasVisited(false);

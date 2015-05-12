@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+
 import Buscas.Celula;
 import Buscas.Graph;
 import Buscas.MatrizAdj;
@@ -30,6 +32,8 @@ public class FramePrincipal extends JFrame{
 	ImageIcon imLivre = new ImageIcon("Imagens/livre.png");
     ImageIcon imRobo = new ImageIcon("Imagens/Robo.png");  
     ImageIcon imPorta = new ImageIcon("Imagens/Porta.gif");
+    ImageIcon imPassou = new ImageIcon("Imagens/roboPassou.gif");
+    
 	private Graph graph;
 	int linhaMatrizAmbiente = 0, colunaMatrizAmbiente = 0;
 
@@ -303,21 +307,35 @@ public class FramePrincipal extends JFrame{
 		}
 	}
 	
-	public void mostraProfundidade(){
-		Celula aux;
-		for (int i = 1; i < graph.getCaminho().size(); i++){
-			aux = graph.getCaminho().get(i);
-			matrizAdj[aux.getLinha()][aux.getColuna()].getBotao().setIcon(imRobo);
-			matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imLivre);
-			linhaRobo = aux.getLinha();
-			colunaRobo = aux.getColuna();
-			try {
-				new Thread().sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+	public void mostraProfundidade()
+	{
+		new Thread() 
+		{
+			public void run()
+			{
+				Celula aux;
+		
+				for (int i = 1; i < graph.getCaminho().size(); i++)
+				{
+			
+				try 
+				{
+					new Thread();
+					aux = graph.getCaminho().get(i);
+					matrizAdj[aux.getLinha()][aux.getColuna()].getBotao().setIcon(imRobo);
+					matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imPassou);
+					linhaRobo = aux.getLinha();
+					colunaRobo = aux.getColuna();
+					
+					Thread.sleep(1000);
+				} catch (InterruptedException e) 
+				{
+					e.printStackTrace();
+				}
+				//this.validate();
+				}	
 			}
-			this.validate();
-		}
+		}.start();
 	}
 	
 	public static void main(String args[]){
