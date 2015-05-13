@@ -1,0 +1,117 @@
+package Buscas;
+
+import java.awt.Frame;
+import java.util.ArrayList;
+import Frames.FramePrincipal;
+
+public class Graph {
+	private Pilha pilha;
+	private MatrizAdj adjMat = new MatrizAdj();
+	private Celula [][] matrizAmbiente;
+	int linhaMatrizAmbiente = 0, colunaMatrizAmbiente = 0, linhaEstadoInicial, colunaEstadoInicial, linhaEstadoFinal, colunaEstadoFinal;
+	private ArrayList<Celula> caminho = new ArrayList<Celula>();
+	CelulaPilha v;
+
+	public Graph(Celula [][] matrizAmbiente, int linhaEstadoInicial, int colunaEstadoInicial, int linhaEstadoFinal, int colunaEstadoFinal){		
+		pilha = new Pilha();
+		this.matrizAmbiente = matrizAmbiente;
+		this.linhaEstadoInicial = linhaEstadoInicial;
+		this.colunaEstadoInicial = colunaEstadoInicial;
+		this.linhaEstadoFinal = linhaEstadoFinal;
+		this.colunaEstadoFinal = colunaEstadoFinal;
+	}
+
+	public void addEdge(int start, int end, int linhaStart, int colunaStart, int linhaEnd, int colunaEnd){
+		adjMat.matrizAdj[start][end].ligacao = 1;
+		adjMat.matrizAdj[start][end].linhaStart = linhaStart;
+		adjMat.matrizAdj[start][end].colunaStart = colunaStart;
+		adjMat.matrizAdj[start][end].linhaEnd= linhaEnd;
+		adjMat.matrizAdj[start][end].colunaEnd = colunaEnd;
+		adjMat.matrizAdj[end][start].ligacao = 1;
+		adjMat.matrizAdj[end][start].linhaStart = linhaEnd;
+		adjMat.matrizAdj[end][start].colunaStart = colunaEnd;
+		adjMat.matrizAdj[end][start].linhaEnd = linhaStart;
+		adjMat.matrizAdj[end][start].colunaEnd = colunaStart;
+	}
+
+
+	public void dfs()  
+	{                              
+		
+		matrizAmbiente[linhaEstadoInicial][colunaEstadoInicial].setWasVisited(true); 
+		caminho.add(matrizAmbiente[linhaEstadoInicial][colunaEstadoInicial]);
+		pilha.push(linhaEstadoInicial, colunaEstadoInicial);             
+		System.out.println("Linha :"+linhaEstadoInicial+" Coluna: "+colunaEstadoInicial);
+		
+		while( !pilha.isEmpty() )     
+		{
+			CelulaPilha v = getAdjUnvisitedVertex( pilha.peek() );
+			CelulaPilha celulaAnterior = pilha.peek();
+			Celula anterior = matrizAmbiente[celulaAnterior.linha][celulaAnterior.coluna];
+			if(v.linha == -1){                 
+				CelulaPilha celulaAux = pilha.pop();
+				matrizAmbiente[celulaAux.linha][celulaAux.coluna].setAdjDisponiveis(false);
+			}
+			else                      
+			{
+				matrizAmbiente[v.linha][v.coluna].setWasVisited(true);
+				Celula aux = matrizAmbiente[v.linha][v.coluna];
+				aux.setAnterior(anterior);
+				caminho.add(aux);              
+				pilha.push(v.linha, v.coluna);
+				
+				System.out.println("Linha: "+v.linha+" Coluna: "+v.coluna);
+			}	
+			
+		} 
+		for(int l=0; l < 7; l++){
+			for (int c=0; c < 20; c++){
+				matrizAmbiente[l][c].setWasVisited(false);
+			}
+		}
+	}
+
+	public CelulaPilha getAdjUnvisitedVertex(CelulaPilha v)
+	{
+		CelulaPilha resul = new CelulaPilha();
+		resul.linha = -1;
+		resul.coluna = -1;
+		if (v.linha > 0){
+			if ((!matrizAmbiente[v.linha-1][v.coluna].isWasVisited()) && (!matrizAmbiente[v.linha-1][v.coluna].isObstaculo())){
+				resul.linha = v.linha-1;
+				resul.coluna = v.coluna;
+				return resul;
+			}
+		}
+		
+		if (v.linha < 6){
+			if ((!matrizAmbiente[v.linha+1][v.coluna].isWasVisited()) && (!matrizAmbiente[v.linha+1][v.coluna].isObstaculo())){
+				resul.linha = v.linha+1;
+				resul.coluna = v.coluna;
+				return resul;
+			}
+		}
+		
+		if (v.coluna > 0){
+			if ((!matrizAmbiente[v.linha][v.coluna-1].isWasVisited()) && (!matrizAmbiente[v.linha][v.coluna-1].isObstaculo())){
+				resul.linha = v.linha;
+				resul.coluna = v.coluna-1;
+				return resul;
+			}			
+		}
+
+		if (v.coluna < 19){
+			if ((!matrizAmbiente[v.linha][v.coluna+1].isWasVisited()) && (!matrizAmbiente[v.linha][v.coluna+1].isObstaculo())){
+				resul.linha = v.linha;
+				resul.coluna = v.coluna+1;
+				return resul;
+			}
+		}
+
+		return resul;
+	} 
+	
+	public ArrayList<Celula> getCaminho(){
+		return this.caminho;
+	}
+}

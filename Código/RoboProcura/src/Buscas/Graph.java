@@ -2,7 +2,6 @@ package Buscas;
 
 import java.awt.Frame;
 import java.util.ArrayList;
-
 import Frames.FramePrincipal;
 
 public class Graph {
@@ -42,25 +41,23 @@ public class Graph {
 		matrizAmbiente[linhaEstadoInicial][colunaEstadoInicial].setWasVisited(true); 
 		caminho.add(matrizAmbiente[linhaEstadoInicial][colunaEstadoInicial]);
 		pilha.push(linhaEstadoInicial, colunaEstadoInicial);             
-		System.out.println("Linha :"+linhaEstadoInicial+" Coluna: "+colunaEstadoInicial);
 		
 		while( !pilha.isEmpty() )     
 		{
 			CelulaPilha v = getAdjUnvisitedVertex( pilha.peek() );
-			if(v.linha == -1)                 
+			CelulaPilha celulaAnterior = pilha.peek();
+			Celula anterior = matrizAmbiente[celulaAnterior.linha][celulaAnterior.coluna];
+			if(v.linha == -1){                 
 				pilha.pop();
+			}
 			else                      
 			{
 				matrizAmbiente[v.linha][v.coluna].setWasVisited(true);
-				caminho.add(matrizAmbiente[v.linha][v.coluna]);              
-				pilha.push(v.linha, v.coluna);
-				if (v.linha == linhaEstadoFinal && v.coluna == colunaEstadoFinal){
-					break;
-				}
-				System.out.println("Linha: "+v.linha+" Coluna: "+v.coluna);
-			}	
-			//Aqui para inserir o código para voltar as casas em backtraking
-			
+				Celula aux = matrizAmbiente[v.linha][v.coluna];
+				aux.setAnterior(anterior);
+				caminho.add(aux);              
+				pilha.push(v.linha, v.coluna);				
+			}				
 		} 
 		for(int l=0; l < 7; l++){
 			for (int c=0; c < 20; c++){
@@ -108,8 +105,12 @@ public class Graph {
 
 		return resul;
 	} 
-	
+		
 	public ArrayList<Celula> getCaminho(){
 		return this.caminho;
+	}
+	
+	public void setMatrizAmbiente(Celula[][] matrizAmbiente){
+		this.matrizAmbiente = matrizAmbiente;
 	}
 }

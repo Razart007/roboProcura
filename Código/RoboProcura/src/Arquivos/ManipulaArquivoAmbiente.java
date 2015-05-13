@@ -2,9 +2,10 @@ package Arquivos;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
+import java.io.ObjectOutputStream;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -13,88 +14,101 @@ import Buscas.Celula;
 
 
 public class ManipulaArquivoAmbiente {
-	String local;
-	Celula [][] matrizAdj;
-/*
+	String local = null;
+
 	public void novoArquivo(){
-		try { // Criação do Arquivo
-			FileInputStream fi = new FileInputStream(
-					"Biblioteca.txt");
-			ObjectInputStream arquivo1 = new ObjectInputStream(fi);
-			Biblioteca = (Movimentação) arquivo1.readObject();
-			arquivo1.close();
+		String diretorioArquivo = null;
+		JFileChooser escolhe = new JFileChooser();
 
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
+		FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivos de ambiente (*.rpa)", "rpa");
+		escolhe.setFileFilter(filtro);
+
+		if (escolhe.showSaveDialog(null) == 0){
+			diretorioArquivo = escolhe.getSelectedFile().getPath() + ".rpa";
+			diretorioArquivo = diretorioArquivo.replace('\\', '/');
+			
+			try{
+				System.out.println(diretorioArquivo);
+				FileOutputStream fo = new FileOutputStream(diretorioArquivo);
+				System.out.println("Depois");
+				ObjectOutputStream arquivo = new ObjectOutputStream(fo);
+				
+				arquivo.close();
+				fo.close();
+				local = diretorioArquivo;
+			} 
+			catch(Exception erro){
+				JOptionPane.showMessageDialog(null, "Erro", "Erro ao salvar arquivo", JOptionPane.ERROR_MESSAGE);
+			}
 		}
-
 	}
 
 
-	public void abrirAmbiente(){
-		File arquivo = getFile();
-		if (arquivo != null){
-			if (arquivo.exists()){
-				if (arquivo.isFile()){
-					String texto = "";
-					try{
-						FileReader leitura = new FileReader(arquivo);
-						BufferedReader bufferLeitura = new BufferedReader(leitura);
-						String linha = bufferLeitura.readLine();
-						local = arquivo.getAbsolutePath();
-						local = local.replace('\\', '/');
-						while (linha != null){
-							texto += linha+"\n";
-							linha = bufferLeitura.readLine();
-						}
-						bufferLeitura.close();
-					} catch (IOException e){
-						System.out.println("Exceção"+e);
-					}
-					textArea.setText(texto);
-					this.texto = texto;
-				}
-				else {
-					JOptionPane.showMessageDialog(this,"Arquivo Inválido","Arquivo Inválido",JOptionPane.ERROR_MESSAGE);
-				}
-			}	
+	public Celula[][] abrirAmbiente(){
+		String diretorioArquivo = null;
+		JFileChooser escolhe = new JFileChooser();
+		Celula[][] ambiente = new Celula[7][20];
+		FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivos de ambiente (*.rpa)", "rpa");
+		escolhe.setFileFilter(filtro);
+
+		if (escolhe.showOpenDialog(null) == 0){
+			diretorioArquivo = escolhe.getSelectedFile().getPath();
+			diretorioArquivo = diretorioArquivo.replace('\\', '/');
+
+			try{
+				FileInputStream fi = new FileInputStream(diretorioArquivo);
+				ObjectInputStream arquivo = new ObjectInputStream(fi);
+				ambiente = (Celula[][]) arquivo.readObject();
+				arquivo.close();
+				fi.close();
+				local = diretorioArquivo;
+			} 
+			catch(Exception erro){
+				JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo", "Erro", JOptionPane.ERROR_MESSAGE);
+			}
 		}
-	} catch (IOException e){	
+
+		return ambiente;
 	}		
 
 
 
-	public void salvarAmbiente(){
-
-	}
-
-
-	private File getFile() throws IOException{
+	public void salvarAmbiente(Celula[][] ambiente){
+		String diretorioArquivo = null;
 		JFileChooser escolhe = new JFileChooser();
-
 		if (local != null){
-			File aux = new File(local);
-			escolhe.setCurrentDirectory(aux);			
+			diretorioArquivo = local;
+			try {
+				FileOutputStream fo = new FileOutputStream(diretorioArquivo);
+				ObjectOutputStream arquivo = new ObjectOutputStream(fo);
+				arquivo.writeObject(ambiente);
+				arquivo.close();
+				fo.close();
+			}	
+			catch(Exception erro){
+				JOptionPane.showMessageDialog(null, "Erro ao salvar no arquivo", "Erro", JOptionPane.ERROR_MESSAGE);
+			}
 		}
+		else {
+			FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivos de ambiente (*.rpa)", "rpa");
+			escolhe.setFileFilter(filtro);
 
-		FileNameExtensionFilter filtro = new FileNameExtensionFilter("Arquivos de ambiente (*.rpa)", "rpa");
+			if (escolhe.showOpenDialog(null) == 0){
+				diretorioArquivo = escolhe.getSelectedFile().getPath() + ".rpa";
+				diretorioArquivo = diretorioArquivo.replace('\\', '/');
 
-		escolhe.setFileFilter(filtro);
-
-
-		int resultado = escolhe.showOpenDialog(null);
-
-		if (resultado == JFileChooser.CANCEL_OPTION)
-			return null;
-
-		File arquivo = escolhe.getSelectedFile();
-
-		if ((arquivo == null) || arquivo.getName().equals("")){
-			JOptionPane.showMessageDialog(null, "Arquivo Inválido","Arquivo Inválido",JOptionPane.ERROR_MESSAGE);
+				try{
+					FileInputStream fi = new FileInputStream(diretorioArquivo);
+					ObjectInputStream arquivo = new ObjectInputStream(fi);
+					ambiente = (Celula[][]) arquivo.readObject();
+					arquivo.close();
+					fi.close();
+					local = diretorioArquivo;
+				} 
+				catch(Exception erro){
+					JOptionPane.showMessageDialog(null,"Erro ao salvar arquivo", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
+			}
 		}
-
-		return arquivo;
-	} */
+	}
 }

@@ -1,13 +1,16 @@
 package Buscas;
 
+import java.io.Serializable;
+
 import javax.swing.JButton;
 
-public class Celula {
+public class Celula implements Serializable{
 	private int linha;
 	private int coluna;
-	private boolean obstaculo, robo, objetivo, wasVisited;
+	private boolean obstaculo, robo, objetivo, wasVisited, adjDisponiveis;
 	private JButton botao;
-	
+	private Celula anterior = null;
+	public int linhaInicial, colunaInicial, linhaObjetivo, colunaObjetivo; 
 	
 	public Celula(int linha, int coluna, boolean obstaculo){
 		this.linha = linha;
@@ -17,6 +20,7 @@ public class Celula {
 		robo = false;
 		objetivo = false;
 		wasVisited = false;
+		adjDisponiveis = true;
 	}
 
 	public int getLinha() {
@@ -74,4 +78,21 @@ public class Celula {
 	public void setWasVisited(boolean wasVisited) {
 		this.wasVisited = wasVisited;
 	}
+	
+	public Celula getAnterior() {
+		return anterior;
+	}
+
+	public void setAnterior(Celula anterior) {
+		this.anterior = anterior;
+	}
+	
+	public boolean isAdjDisponiveis() {
+		return adjDisponiveis;
+	}
+
+	public void setAdjDisponiveis(boolean adjDisponiveis) {
+		this.adjDisponiveis = adjDisponiveis;
+	}
+
 }

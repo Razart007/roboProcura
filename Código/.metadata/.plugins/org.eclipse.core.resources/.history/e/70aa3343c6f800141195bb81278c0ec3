@@ -1,0 +1,420 @@
+package Frames;
+
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+
+import Buscas.Celula;
+import Buscas.Graph;
+import Buscas.MatrizAdj;
+import Buscas.Pilha;
+
+public class FramePrincipal extends JFrame{
+	JPanel ambiente;
+	JMenuBar barraMenus;
+	JMenu arquivo, executar;
+	JMenuItem sair, novo, abrir, salvar;
+	JButton jBuExecutar, robo, porta, jBuCaminhoCerto;
+	Celula [][] matrizAdj = new Celula [7][20];
+	int linhaRobo = -1, colunaRobo = -1, linhaObjetivo = -1, colunaObjetivo = -1, linhaInicial = -1, colunaInicial = -1;
+	ArrayList<Celula> caminhoCerto = new ArrayList<Celula>();
+	ImageIcon imObstaculo = new ImageIcon("Imagens/obstaculo.png");
+	ImageIcon imLivre = new ImageIcon("Imagens/livre.png");
+	ImageIcon imRobo = new ImageIcon("Imagens/Robo.png");  
+	ImageIcon imPorta = new ImageIcon("Imagens/Porta.gif");
+	ImageIcon imPassou = new ImageIcon("Imagens/roboPassou.gif");
+	ImageIcon imCaminhoCerto = new ImageIcon("Imagens/caminhoCerto.jpg");
+	boolean chamouProdundidade = false;
+	private Graph graph;
+	int linhaMatrizAmbiente = 0, colunaMatrizAmbiente = 0;
+
+
+	public FramePrincipal(){
+		inicializaFrame();
+		inicializaComponentes();
+		inicializaAmbiente();
+	}
+
+	private void inicializaFrame(){
+		try {  
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");  
+		} catch (Exception e) {  
+			e.printStackTrace();  
+		}  
+
+		this.setTitle("Robo à Procura");
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage("Imagens/Robo.png"));
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setResizable(false);
+		this.setLayout(null);
+		this.setSize(1024, 650);
+		this.setLocationRelativeTo(this);
+		this.setVisible(true);
+	}
+
+	private void inicializaComponentes(){
+		barraMenus = new JMenuBar();
+		barraMenus.setPreferredSize(new java.awt.Dimension(101,23));
+		this.setJMenuBar(barraMenus);
+
+		novo = new JMenuItem("Novo",KeyEvent.VK_N);
+		abrir = new JMenuItem("Abrir",KeyEvent.VK_O);
+		salvar = new JMenuItem("Salvar",KeyEvent.VK_S);
+		sair = new JMenuItem("Sair",KeyEvent.VK_E);
+
+		arquivo = new JMenu("Arquivo");
+		arquivo.add(novo);
+		novo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		arquivo.add(abrir);
+		abrir.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		arquivo.add(salvar);
+		salvar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		arquivo.add(sair);
+		sair.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+
+		barraMenus.add(arquivo);
+
+		executar = new JMenu("Executar");
+
+		barraMenus.add(executar);
+
+	}
+
+
+	private void inicializaAmbiente(){
+		ambiente = new JPanel();
+		ambiente.setSize(100, 200);
+		ambiente.setBackground(Color.WHITE);
+		add(ambiente);
+		ambiente.setBounds(10, 5, 1010, 560);
+		ambiente.setLayout(null);
+
+		linhaRobo = 3;
+		colunaRobo = 0;
+		linhaInicial = linhaRobo;
+		colunaInicial = colunaRobo;
+		linhaObjetivo = 4;
+		colunaObjetivo = 18;
+
+		Celula robo = new Celula(linhaRobo,colunaRobo,false);
+		robo.setRobo(true);
+		robo.getBotao().setIcon(imRobo);
+		robo.getBotao().setContentAreaFilled(false);
+		matrizAdj[robo.getLinha()][robo.getColuna()] = robo;
+		matrizAdj[robo.getLinha()][robo.getColuna()].getBotao().setBounds(colunaRobo*50, linhaRobo*80, 50, 80);
+		ambiente.add(matrizAdj[robo.getLinha()][robo.getColuna()].getBotao());
+
+		Celula porta = new Celula(linhaObjetivo,colunaObjetivo,false);
+		porta.setObjetivo(true);
+		porta.getBotao().setIcon(imPorta);
+		porta.getBotao().setContentAreaFilled(false);
+		matrizAdj[porta.getLinha()][porta.getColuna()] = porta;
+		matrizAdj[porta.getLinha()][porta.getColuna()].getBotao().setBounds(colunaObjetivo*50, linhaObjetivo*80, 50, 80);
+		ambiente.add(matrizAdj[porta.getLinha()][porta.getColuna()].getBotao());
+
+		for (int l = 0; l < 7;l++){
+			for (int c = 0; c < 20; c++){
+				if (!((l == linhaRobo && c == colunaRobo)||(l == linhaObjetivo && c == colunaObjetivo))){
+					try{
+						Celula celula = new Celula(l, c, false);
+						celula.getBotao().setContentAreaFilled(false);
+						boolean caminhoLivre = false;
+
+						if ((c == 1) && (l == 3)){
+							caminhoLivre = true;
+						}
+
+						if (c == 2){
+							caminhoLivre = true;
+						}
+
+						if (((c == 3) || (c == 5)) && ((l == 0) || (l == 6))){
+							caminhoLivre = true;
+						}
+
+						if (c == 4){
+							caminhoLivre = true;
+						}
+
+						if (c == 6){
+							caminhoLivre = true;
+						}
+
+						if ((c == 7) && (l == 4)){
+							caminhoLivre = true;
+						}
+
+						if ((c == 8) && ((l == 4) || (l == 5) || (l == 6))){
+							caminhoLivre = true;
+						}
+
+						if ((c == 9) && (l == 6)){
+							caminhoLivre = true;
+						}
+
+						if (c == 10){
+							caminhoLivre = true;
+						}
+
+						if ((c == 11) && (l == 0)){
+							caminhoLivre = true;
+						}
+
+						if (c == 12){
+							caminhoLivre = true;
+						}
+
+						if ((c == 13) && (l == 3)){
+							caminhoLivre = true;
+						}
+
+						if (c == 14){
+							caminhoLivre = true;
+						}
+
+						if ((c == 15) && (l == 0)){
+							caminhoLivre = true;
+						}
+
+						if (c == 16){
+							caminhoLivre = true;
+						}
+
+						if ((c == 17) && (l == 6)){
+							caminhoLivre = true;
+						}
+
+						if ((c == 18) && ((l == 6) || (l == 5) || (l == 4))){
+							caminhoLivre = true;
+						}
+
+						if (caminhoLivre){
+							celula.getBotao().setIcon(imLivre);
+							celula.setObstaculo(false);
+						}
+						else {
+							celula.getBotao().setIcon(imObstaculo);
+							celula.setObstaculo(true);
+						}
+
+						matrizAdj[l][c] = celula;
+						ambiente.add(matrizAdj[l][c].getBotao());
+						matrizAdj[l][c].getBotao().setBounds(c*50, l*80, 50, 80);
+						matrizAdj[l][c].getBotao().addActionListener(new eventosB(l, c)); 
+					} catch(Exception e){						
+					}
+				}
+			}
+		}
+		graph = new Graph(matrizAdj, linhaRobo, colunaRobo, linhaObjetivo, colunaObjetivo);
+		adcionarArestas();
+
+		jBuExecutar = new JButton("Caminho Profundidade");
+		jBuExecutar.setSize(200, 30);
+		add(jBuExecutar);
+		jBuExecutar.setBounds(300, 567, 200, 30);	
+
+		jBuExecutar.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!chamouProdundidade){
+					graph.dfs();
+					chamouProdundidade = true;
+				}
+				mostraProfundidade();	
+			}
+		});
+		
+		jBuCaminhoCerto = new JButton("Caminho Objetivo");
+		jBuCaminhoCerto.setSize(200, 30);
+		add(jBuCaminhoCerto);
+		jBuCaminhoCerto.setBounds(650, 567, 200, 30);
+		
+		jBuCaminhoCerto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!chamouProdundidade){
+					graph.dfs();
+					chamouProdundidade = true;
+				}
+				mostraObjetivo();
+			}
+		});
+	}
+
+	private class eventosB implements ActionListener{
+		int linha, coluna;
+
+		public eventosB(int linha, int coluna){
+			this.linha = linha;
+			this.coluna = coluna;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (matrizAdj[linha][coluna].isObstaculo()){
+				matrizAdj[linha][coluna].getBotao().setIcon(imObstaculo);
+				matrizAdj[linha][coluna].setObstaculo(false);
+			}
+			else {
+				matrizAdj[linha][coluna].getBotao().setIcon(imLivre);
+				matrizAdj[linha][coluna].setObstaculo(true);
+			}
+		}
+	}
+
+	public void adcionarArestas(){
+		int linha = 0;
+		int coluna = 0;
+		for (int i = 0; i < 140; i++){
+			if (linha > 0){
+				graph.addEdge(i, i-20, linha, coluna, linha - 1, coluna);
+			}
+
+			if (coluna > 0){
+				graph.addEdge(i, i-1, linha, coluna, linha, coluna - 1);
+			}
+
+			if (linha < 6){
+				graph.addEdge(i, i+20, linha, coluna, linha + 1, coluna);
+			}
+
+			if (coluna < 19){
+				graph.addEdge(i, i+1, linha, coluna, linha, coluna + 1);
+			}
+
+			if (coluna == 19){
+				linha++;
+				coluna = 0;
+			}
+			else{
+				coluna++;
+			}
+		}
+	}
+
+	public void mostraProfundidade()
+	{
+		new Thread() 
+		{
+			public void run()
+			{
+				Celula aux;
+				matrizAdj[linhaObjetivo][colunaObjetivo].getBotao().setIcon(imPorta);
+				if ((linhaRobo != linhaObjetivo) && (colunaRobo != colunaObjetivo)){
+					matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imLivre);
+				}
+				linhaRobo = linhaInicial;
+				colunaRobo = colunaInicial;
+
+
+				for (int i = 1; i < graph.getCaminho().size(); i++)
+				{
+					try 
+					{
+						aux = graph.getCaminho().get(i);
+						matrizAdj[aux.getLinha()][aux.getColuna()].getBotao().setIcon(imRobo);
+						matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imPassou);
+						linhaRobo = aux.getLinha();
+						colunaRobo = aux.getColuna();
+						new Thread();
+						Thread.sleep(500);
+					} catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					}
+				}	
+			}
+		}.start();
+	}
+
+	public void mostraObjetivo(){
+		Celula objetivo = matrizAdj[linhaObjetivo][colunaObjetivo];
+		ArrayList<Celula> caminhoAux = new ArrayList<Celula>();
+		caminhoCerto = new ArrayList<Celula>();
+		while(!(objetivo.getAnterior() == null)){
+			caminhoAux.add(objetivo);
+			objetivo = objetivo.getAnterior();
+		}
+		
+		for (int i = caminhoAux.size() - 1; i >= 0; i--){
+			caminhoCerto.add(caminhoAux.get(i));
+		}
+		
+		new Thread() 
+		{
+			public void run()
+			{
+				Celula aux;
+				matrizAdj[linhaObjetivo][colunaObjetivo].getBotao().setIcon(imPorta);
+				if ((linhaRobo != linhaObjetivo) && (colunaRobo != colunaObjetivo)){
+					matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imLivre);
+				}
+				linhaRobo = linhaInicial;
+				colunaRobo = colunaInicial;
+
+				for (int i = 0; i < caminhoCerto.size(); i++)
+				{
+					try 
+					{
+						aux = caminhoCerto.get(i);
+						matrizAdj[aux.getLinha()][aux.getColuna()].getBotao().setIcon(imRobo);
+						matrizAdj[linhaRobo][colunaRobo].getBotao().setIcon(imCaminhoCerto);
+						linhaRobo = aux.getLinha();
+						colunaRobo = aux.getColuna();
+						new Thread();
+						Thread.sleep(500);
+					} catch (InterruptedException e) 
+					{
+						e.printStackTrace();
+					}
+				}	
+			}
+		}.start();
+
+		
+	}
+
+	public static void main(String args[]){
+		FramePrincipal frame = new FramePrincipal();
+	}
+}
